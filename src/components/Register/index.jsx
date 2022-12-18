@@ -4,20 +4,45 @@ import './index.css'
 
 export default class Register extends Component {
     state = {
-        userInfo: {
-            userName: '',
-            email: '',
-            password: '',
-            passwordConfirm: '',
-        },
-        errMsg: [],
+        name: '',
+        email: '',
+        pwd: '',
+        passwordConfirm: '',
+        secQ: '',
+        secA: ''
     };
+
+    fpost = async () => {
+        let res = await fetch('http://localhost:3000/url/pause', {
+            method: 'post',
+            header: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state)
+        })
+
+        let json = await res.json()
+        console.log(json)
+
+        if (res.status === 100) {
+            alert('用户名已被使用')
+        } else if (res.status === 101) {
+            alert('用户创建成功')
+        } else if (res.status === 107) {
+            alert('用户创建失败')
+        }
+    }
 
     handleSubmit = e => {
-        e.preventDefault();
-
-        window.alert("注册成功！")
+        e.preventDefault()
+        this.fpost()
     };
+
+    saveFormData = (dataType) => {
+        return (event) => {
+            this.setState({ [dataType]: event.target.value })
+        }
+    }
 
     render() {
         return (
@@ -28,8 +53,9 @@ export default class Register extends Component {
                         <input type="text"
                             className={classnames("form-control")}
                             id="userName"
-                            name="userName"
-                            required />
+                            name="name"
+                            required
+                            onChange={this.saveFormData('name')} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label">邮箱</label>
@@ -38,15 +64,17 @@ export default class Register extends Component {
                             id="email"
                             aria-describedby="emailHelp"
                             name="email"
-                            required />
+                            required
+                            onChange={this.saveFormData('email')} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label">密码</label>
                         <input type="password"
                             className={classnames("form-control")}
                             id="password"
-                            name="password"
-                            required />
+                            name="pwd"
+                            required
+                            onChange={this.saveFormData('pwd')} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="passwordConfirm" className="form-label">确认密码</label>
@@ -54,7 +82,8 @@ export default class Register extends Component {
                             className={classnames("form-control")}
                             id="passwordConfirm"
                             name="passwordConfirm"
-                            required />
+                            required
+                            onChange={this.saveFormData('passwordConfirm')} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="passwordConfirm" className="form-label">密保问题一</label>
@@ -70,8 +99,9 @@ export default class Register extends Component {
                         <input type="password"
                             className={classnames("form-control")}
                             id="passwordConfirm"
-                            name="passwordConfirm"
-                            required />
+                            name="secQ"
+                            required
+                            onChange={this.saveFormData('secQ')} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="passwordConfirm" className="form-label">密保问题二</label>
@@ -87,8 +117,9 @@ export default class Register extends Component {
                         <input type="password"
                             className={classnames("form-control")}
                             id="passwordConfirm"
-                            name="passwordConfirm"
-                            required />
+                            name="secA"
+                            required
+                            onChange={this.saveFormData('secA')} />
                     </div>
                     <button type="submit" className="btn btn-primary">点击注册</button>
                 </form>

@@ -1,25 +1,38 @@
 import React, { Component } from 'react'
 import classnames from 'classnames';
-import './index.css'
 
 export default class Login extends Component {
     state = {
-        userName: '',
+        email: '',
         password: '',
     }
 
-    handleSubmit = async e => {
-        e.preventDefault()
-        const { userName, password } = this.state
-        alert(`你输入的用户名是：${userName}，你输入的密码是：${password}`)
+    fpost = async () => {
+        let res = await fetch('http://localhost:3000/url/login', {
+            method: 'post',
+            header: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state)
+        })
 
-        // try {
-        //     const response = await fetch(``)
-        //     const data = await response.json()
-        //     console.log(data.items)
-        // } catch (error) {
-        //     console.log('请求出错', error)
-        // }
+        let json = await res.json()
+        console.log(json)
+
+        if (res.status === 102) {
+            alert('邮箱或密码错误')
+        } else if (res.status === 103) {
+            alert('登录成功')
+        } else if (res.status === 105) {
+            alert('登录信息无效')
+        }
+    }
+
+    handleSubmit = e => {
+        e.preventDefault()
+        const { email, password } = this.state
+        alert(`你输入的邮箱是：${email}，你输入的密码是：${password}`)
+        this.fpost()
     };
 
     saveFormData = (dataType) => {
@@ -34,13 +47,13 @@ export default class Login extends Component {
                 <div className='content'>
                     <form onSubmit={this.handleSubmit} >
                         <div className="mb-3">
-                            <label htmlFor="userName" className="form-label">用户名</label>
-                            <input type="text"
+                            <label htmlFor="email" className="form-label">邮箱</label>
+                            <input type="email"
                                 className={classnames("form-control")}
-                                id="userName"
-                                name="userName"
+                                id="email"
+                                name="email"
                                 required
-                                onChange={this.saveFormData('userName')} />
+                                onChange={this.saveFormData('email')} />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="password" className="form-label">密码</label>
